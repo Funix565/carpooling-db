@@ -1,3 +1,22 @@
+-- select info about drivers
+-- for 6 month (range)? -> (LIKE ____-01-__); 
+-- NOT on the carS (e.g. Opel, Deawoo)
+-- pref=is_pet
+
+-- вывести челов, у которых средний заработок больше, чем средний заработок во всех областях
+-- with avg earning greater than all avg earning in Oblast ORDER DESC -> All; ANY. group by Oblast
+
+-- NOT in cities from some stateS (e.g. Kyiv Oblast, Poltava Oblast ...) -> use OR change to IN
+-- how many people they had  ORDER ASC
+-- =================================================================================================
+-- include subqueries with select -> a kind of filter to minimaze rows for join
+-- but in reality we will get rid of this redundancy
+
+-- Also, the ANY and ALL operators are some that you should be careful with because, 
+-- by including these into your queries, the index won’t be used. 
+-- Alternatives that will come in handy here are aggregation functions like MIN or MAX.
+-- that the biggest table is placed last in the join.
+
 select mu.id, 
 mu.name, mu.contact_number, ca.make, mp.is_pet, src.city_name, dst.city_name, ri.created_on,
 sum(ri.price_per_head), sum(ri.seats_available)
@@ -14,12 +33,3 @@ and ri.created_on > '2021-12-12'
 and src.city_name='Uzhhorod'
 group by mu.id, ca.make, mp.is_pet, src.city_name, dst.city_name, ri.created_on
 order by sum(ri.price_per_head), sum(ri.seats_available)
-
--- we can definetly add inner select for src and dst cities.
--- it'll be a kind of filter, we'll get their id's and then run finding in ride with them
--- instead of comparing every ride with all cities
--- we'll have a limited list of cities.
--- Well, we need somehow prefilter data for easier joining
--- and we can perform this inner select to join on them
--- not on the whole tables
--- but in reality we should get rid of them bcs Postres joins know better :=)
