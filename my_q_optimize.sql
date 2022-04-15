@@ -17,19 +17,42 @@
 -- Alternatives that will come in handy here are aggregation functions like MIN or MAX.
 -- that the biggest table is placed last in the join.
 
-select mu.id, 
-mu.name, mu.contact_number, ca.make, mp.is_pet, src.city_name, dst.city_name, ri.created_on,
-sum(ri.price_per_head), sum(ri.seats_available)
-from car ca, memberuser_car mc, memberuser mu, memberuser_preference mp, ride ri, city dst, city src
-where ca.id=mc.car_id
-and mu.id=mc.memberuser_id
-and mu.id=mp.memberuser_id
+-- select tgz.name, tgz.salary, tgz.seats_available
+-- from
+-- (
+
+select 
+mu.id, 
+mu.name, 
+mu.contact_number, 
+ca.make, 
+mp.is_pet, 
+avg(ri.price_per_head) as salary, 
+src.state_name, 
+dst.state_name, 
+sum(ri.seats_available) as pplcount
+, ri.created_on
+from memberuser mu, memberuser_car mc, car ca, memberuser_preference mp, ride ri, city src, city dst
+where mu.id=mc.memberuser_id
+and mc.car_id=ca.id
+and mp.memberuser_id=mu.id
 and ri.memberuser_car_id=mc.id
 and ri.src_city_id=src.id
 and ri.dst_city_id=dst.id
-and mp.is_pet = 'Y'
-and ca.make = 'Opel'
-and ri.created_on > '2021-12-12'
-and src.city_name='Uzhhorod'
-group by mu.id, ca.make, mp.is_pet, src.city_name, dst.city_name, ri.created_on
-order by sum(ri.price_per_head), sum(ri.seats_available)
+and ca.make <> ALL (select make from car where make like 'Opel' or make like 'Daewoo')
+and mp.is_pet <> 'N'
+and (src.state_name <> 'Zhytomyr Oblast' and src.state_name <> 'Vinnytsia Oblast' and src.state_name <> 'Chernivtsi Oblast')
+and (dst.state_name <> 'Zhytomyr Oblast' and dst.state_name <> 'Vinnytsia Oblast' and dst.state_name <> 'Chernivtsi Oblast')
+--and ri.created_on::text like '____-01-__'
+  
+  group by 
+  mu.id, 
+  ca.make, 
+  mp.is_pet, 
+  src.state_name, 
+  dst.state_name--,-- 
+  ,ri.created_on -- find date range in subquery
+--) as tgz
+
+
+;
