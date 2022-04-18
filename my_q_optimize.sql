@@ -17,17 +17,26 @@
 -- Alternatives that will come in handy here are aggregation functions like MIN or MAX.
 -- that the biggest table is placed last in the join.
 
-select 
+SELECT
+    -- get info about drivers. fileds as a proof.
     mu.id
     ,mu.name
     ,mu.contact_number
     ,ca.make
     ,mp.is_pet
-    ,avg(ri.price_per_head) as salary
+    
+    -- earnings for every driver
+    ,avg(ri.price_per_head) AS salary
+
+    -- easier to group by. SRC matters, not DST
     ,src.state_name
-    ,sum(ri.seats_available) as pplcount
-    ,count(ri.created_on) as days
-from
+
+    -- how many people they helped
+    ,sum(ri.seats_available) AS pplcount
+
+    -- and how many rides they made
+    ,count(ri.created_on) AS days
+FROM
     memberuser mu
     ,memberuser_car mc
     ,car ca
@@ -35,38 +44,53 @@ from
     ,ride ri
     ,city src
     ,city dst
-where 
+WHERE 
     mu.id=mc.memberuser_id
-    and mc.car_id=ca.id
-    and mp.memberuser_id=mu.id
-    and ri.memberuser_car_id=mc.id
-    and ri.src_city_id=src.id
-    and ri.dst_city_id=dst.id
-    and ca.make <> ALL (select make from car where make like 'Opel' or make like 'Daewoo')
-    and mp.is_pet <> 'N'
-    and (src.state_name <> 'Zhytomyr Oblast' and src.state_name <> 'Vinnytsia Oblast')
-    and (dst.state_name <> 'Zhytomyr Oblast' and dst.state_name <> 'Vinnytsia Oblast')
-    and ri.created_on::text like '____-11-__'
-group by
+    AND mc.car_id=ca.id
+    AND mp.memberuser_id=mu.id
+    AND ri.memberuser_car_id=mc.id
+    AND ri.src_city_id=src.id
+    AND ri.dst_city_id=dst.id
+
+    -- exclude bad cars
+    AND ca.make <> ALL (SELECT make FROM car WHERE make LIKE 'Opel' OR make LIKE 'Daewoo')
+    
+    -- pets allowed
+    AND mp.is_pet <> 'N'
+
+    -- exclude states
+    AND (src.state_name <> 'Zhytomyr Oblast' AND src.state_name <> 'Vinnytsia Oblast')
+    AND (dst.state_name <> 'Zhytomyr Oblast' AND dst.state_name <> 'Vinnytsia Oblast')
+
+    -- specify date. change to date comparison
+    AND ri.created_on::text LIKE '____-11-__'
+GROUP BY
+    -- for every driver
     mu.id
+
+    -- this should not affect the result because driver is unique
     ,ca.make
     ,mp.is_pet
     ,src.state_name
-having avg(ri.price_per_head) > ALL
+    
+    -- compare selected avg driver's salary with avg salary by states
+HAVING avg(ri.price_per_head) > ALL
     (
-	    select
+	    SELECT
 	        avg(ri.price_per_head)
-	    from
+	    FROM
 	        memberuser_car mc
 	        ,ride ri
 	        ,city src
 	        ,city dst
-	    where
+	    WHERE
 	        mc.id=ri.memberuser_car_id
-	        and ri.src_city_id=src.id
-	        and ri.dst_city_id=dst.id
-	        and (src.state_name <> 'Zhytomyr Oblast' and src.state_name <> 'Vinnytsia Oblast')
-	        and (dst.state_name <> 'Zhytomyr Oblast' and dst.state_name <> 'Vinnytsia Oblast')
-	    group by src.state_name 
+	        AND ri.src_city_id=src.id
+	        AND ri.dst_city_id=dst.id
+	        AND (src.state_name <> 'Zhytomyr Oblast' AND src.state_name <> 'Vinnytsia Oblast')
+	        AND (dst.state_name <> 'Zhytomyr Oblast' AND dst.state_name <> 'Vinnytsia Oblast')
+
+        -- SRC matters
+	    GROUP BY src.state_name 
 	)
 ;
