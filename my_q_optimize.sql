@@ -59,8 +59,8 @@ WHERE
     AND mp.is_pet <> 'N'
 
     -- exclude states
-    AND (src.state_name <> 'Zhytomyr Oblast' AND src.state_name <> 'Vinnytsia Oblast')
-    AND (dst.state_name <> 'Zhytomyr Oblast' AND dst.state_name <> 'Vinnytsia Oblast')
+    AND (src.state_name <> 'Zhytomyr Oblast' AND src.state_name <> 'Vinnytsia Oblast' AND src.state_name <> 'Rivne Oblast' AND src.state_name <> 'Ternopil Oblast')
+    AND (dst.state_name <> 'Zhytomyr Oblast' AND dst.state_name <> 'Vinnytsia Oblast' AND src.state_name <> 'Rivne Oblast' AND src.state_name <> 'Ternopil Oblast')
 
     -- specify date. change to date comparison
     AND ri.created_on::text LIKE '____-11-__'
