@@ -93,4 +93,5 @@ HAVING avg(ri.price_per_head) > ALL
         -- SRC matters
 	    GROUP BY src.state_name 
 	)
+ORDER BY salary DESC, pplcount DESC, days ASC
 ;
