@@ -60,7 +60,7 @@ WHERE
 
     -- exclude states
     AND (src.state_name <> 'Zhytomyr Oblast' AND src.state_name <> 'Vinnytsia Oblast' AND src.state_name <> 'Rivne Oblast' AND src.state_name <> 'Ternopil Oblast')
-    AND (dst.state_name <> 'Zhytomyr Oblast' AND dst.state_name <> 'Vinnytsia Oblast' AND src.state_name <> 'Rivne Oblast' AND src.state_name <> 'Ternopil Oblast')
+    AND (dst.state_name <> 'Zhytomyr Oblast' AND dst.state_name <> 'Vinnytsia Oblast' AND dst.state_name <> 'Rivne Oblast' AND dst.state_name <> 'Ternopil Oblast')
 
     -- specify date. change to date comparison
     AND ri.created_on::text LIKE '____-11-__'
@@ -88,7 +88,7 @@ HAVING avg(ri.price_per_head) > ALL
 	        AND ri.src_city_id=src.id
 	        AND ri.dst_city_id=dst.id
 	        AND (src.state_name <> 'Zhytomyr Oblast' AND src.state_name <> 'Vinnytsia Oblast' AND src.state_name <> 'Rivne Oblast' AND src.state_name <> 'Ternopil Oblast')
-	        AND (dst.state_name <> 'Zhytomyr Oblast' AND dst.state_name <> 'Vinnytsia Oblast' AND src.state_name <> 'Rivne Oblast' AND src.state_name <> 'Ternopil Oblast')
+	        AND (dst.state_name <> 'Zhytomyr Oblast' AND dst.state_name <> 'Vinnytsia Oblast' AND dst.state_name <> 'Rivne Oblast' AND dst.state_name <> 'Ternopil Oblast')
 
         -- SRC matters
 	    GROUP BY src.state_name 
