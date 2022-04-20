@@ -123,6 +123,6 @@ HAVING avg(ri.price_per_head) > (SELECT MAX(avg_per_head) FROM
         -- SRC matters
 	    GROUP BY src.state_name 
 	) avg_state
-ORDER BY salary DESC, pplcount DESC, days ASC
 )
+ORDER BY salary DESC, pplcount DESC, days ASC
 ;
