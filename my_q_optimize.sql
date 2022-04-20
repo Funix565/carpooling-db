@@ -93,10 +93,11 @@ GROUP BY
     ,src.state_name
     
     -- compare selected avg driver's salary with avg salary by states
-HAVING avg(ri.price_per_head) > ALL
+-- HAVING avg(ri.price_per_head) > ALL
+HAVING avg(ri.price_per_head) > (SELECT MAX(avg_per_head) FROM
     (
 	    SELECT
-	        avg(ri.price_per_head)
+	        avg(ri.price_per_head) as avg_per_head
 	    FROM
 	        city src
 		INNER JOIN ride ri
@@ -121,6 +122,7 @@ HAVING avg(ri.price_per_head) > ALL
 
         -- SRC matters
 	    GROUP BY src.state_name 
-	)
+	) avg_state
 ORDER BY salary DESC, pplcount DESC, days ASC
+)
 ;
