@@ -67,14 +67,18 @@ WHERE
 --    AND ri.dst_city_id=dst.id
 
     -- exclude bad cars
-    ca.make <> ALL (SELECT make FROM car WHERE make LIKE 'Opel' OR make LIKE 'Daewoo')
+    -- ca.make <> ALL (SELECT make FROM car WHERE make LIKE 'Opel' OR make LIKE 'Daewoo')
+    ca.make NOT IN ('Opel', 'Daewoo')
     
     -- pets allowed
-    AND mp.is_pet <> 'N'
+    -- AND mp.is_pet <> 'N'
+    AND mp.is_pet = 'Y'
 
     -- exclude states
-    AND (src.state_name <> 'Zhytomyr Oblast' AND src.state_name <> 'Vinnytsia Oblast' AND src.state_name <> 'Rivne Oblast' AND src.state_name <> 'Ternopil Oblast')
-    AND (dst.state_name <> 'Zhytomyr Oblast' AND dst.state_name <> 'Vinnytsia Oblast' AND dst.state_name <> 'Rivne Oblast' AND dst.state_name <> 'Ternopil Oblast')
+    -- AND (src.state_name <> 'Zhytomyr Oblast' AND src.state_name <> 'Vinnytsia Oblast' AND src.state_name <> 'Rivne Oblast' AND src.state_name <> 'Ternopil Oblast')
+    AND src.state_name NOT IN ('Zhytomyr Oblast','Vinnytsia Oblast','Rivne Oblast','Ternopil Oblast')
+    -- AND (dst.state_name <> 'Zhytomyr Oblast' AND dst.state_name <> 'Vinnytsia Oblast' AND dst.state_name <> 'Rivne Oblast' AND dst.state_name <> 'Ternopil Oblast')
+    AND dst.state_name NOT IN ('Zhytomyr Oblast','Vinnytsia Oblast','Rivne Oblast','Ternopil Oblast')
 
     -- specify date. change to date comparison
     -- AND ri.created_on::text LIKE '____-11-__'
@@ -110,8 +114,10 @@ HAVING avg(ri.price_per_head) > ALL
 	        -- mc.id=ri.memberuser_car_id
 	        -- AND ri.src_city_id=src.id
 	        -- AND ri.dst_city_id=dst.id
-	        (src.state_name <> 'Zhytomyr Oblast' AND src.state_name <> 'Vinnytsia Oblast' AND src.state_name <> 'Rivne Oblast' AND src.state_name <> 'Ternopil Oblast')
-	        AND (dst.state_name <> 'Zhytomyr Oblast' AND dst.state_name <> 'Vinnytsia Oblast' AND dst.state_name <> 'Rivne Oblast' AND dst.state_name <> 'Ternopil Oblast')
+	        -- (src.state_name <> 'Zhytomyr Oblast' AND src.state_name <> 'Vinnytsia Oblast' AND src.state_name <> 'Rivne Oblast' AND src.state_name <> 'Ternopil Oblast')
+		src.state_name NOT IN ('Zhytomyr Oblast','Vinnytsia Oblast','Rivne Oblast','Ternopil Oblast')
+	        -- AND (dst.state_name <> 'Zhytomyr Oblast' AND dst.state_name <> 'Vinnytsia Oblast' AND dst.state_name <> 'Rivne Oblast' AND dst.state_name <> 'Ternopil Oblast')
+		AND dst.state_name NOT IN ('Zhytomyr Oblast','Vinnytsia Oblast','Rivne Oblast','Ternopil Oblast')
 
         -- SRC matters
 	    GROUP BY src.state_name 
