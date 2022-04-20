@@ -63,7 +63,8 @@ WHERE
     AND (dst.state_name <> 'Zhytomyr Oblast' AND dst.state_name <> 'Vinnytsia Oblast' AND dst.state_name <> 'Rivne Oblast' AND dst.state_name <> 'Ternopil Oblast')
 
     -- specify date. change to date comparison
-    AND ri.created_on::text LIKE '____-11-__'
+    -- AND ri.created_on::text LIKE '____-11-__'
+    AND ri.created_on > (CURRENT_DATE - INTERVAL '5 months')::date
 GROUP BY
     -- for every driver
     mu.id
