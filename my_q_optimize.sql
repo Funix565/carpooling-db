@@ -37,23 +37,37 @@ SELECT
     -- and how many rides they made
     ,count(ri.created_on) AS days
 FROM
-    memberuser mu
-    ,memberuser_car mc
-    ,car ca
-    ,memberuser_preference mp
-    ,ride ri
-    ,city src
-    ,city dst
+city src
+INNER JOIN ride ri
+ON src.id=ri.src_city_id
+INNER JOIN city dst
+ON dst.id=ri.dst_city_id
+INNER JOIN memberuser_car mc
+ON ri.memberuser_car_id=mc.id
+INNER JOIN car ca
+ON ca.id=mc.car_id
+INNER JOIN memberuser mu
+ON mc.memberuser_id=mu.id
+INNER JOIN memberuser_preference mp
+ON mp.memberuser_id=mu.id
+
+--    memberuser mu
+--    ,memberuser_car mc
+--    ,car ca
+--    ,memberuser_preference mp
+--    ,ride ri
+--    ,city src
+--    ,city dst
 WHERE 
-    mu.id=mc.memberuser_id
-    AND mc.car_id=ca.id
-    AND mp.memberuser_id=mu.id
-    AND ri.memberuser_car_id=mc.id
-    AND ri.src_city_id=src.id
-    AND ri.dst_city_id=dst.id
+--    mu.id=mc.memberuser_id
+--    AND mc.car_id=ca.id
+--    AND mp.memberuser_id=mu.id
+--    AND ri.memberuser_car_id=mc.id
+--    AND ri.src_city_id=src.id
+--    AND ri.dst_city_id=dst.id
 
     -- exclude bad cars
-    AND ca.make <> ALL (SELECT make FROM car WHERE make LIKE 'Opel' OR make LIKE 'Daewoo')
+    ca.make <> ALL (SELECT make FROM car WHERE make LIKE 'Opel' OR make LIKE 'Daewoo')
     
     -- pets allowed
     AND mp.is_pet <> 'N'
@@ -80,15 +94,23 @@ HAVING avg(ri.price_per_head) > ALL
 	    SELECT
 	        avg(ri.price_per_head)
 	    FROM
-	        memberuser_car mc
-	        ,ride ri
-	        ,city src
-	        ,city dst
+	        city src
+		INNER JOIN ride ri
+		ON src.id=ri.src_city_id
+		INNER JOIN city dst
+		ON dst.id=ri.dst_city_id
+		INNER JOIN memberuser_car mc
+		ON ri.memberuser_car_id=mc.id
+
+	        -- memberuser_car mc
+	        -- ,ride ri
+	        -- ,city src
+	        -- ,city dst
 	    WHERE
-	        mc.id=ri.memberuser_car_id
-	        AND ri.src_city_id=src.id
-	        AND ri.dst_city_id=dst.id
-	        AND (src.state_name <> 'Zhytomyr Oblast' AND src.state_name <> 'Vinnytsia Oblast' AND src.state_name <> 'Rivne Oblast' AND src.state_name <> 'Ternopil Oblast')
+	        -- mc.id=ri.memberuser_car_id
+	        -- AND ri.src_city_id=src.id
+	        -- AND ri.dst_city_id=dst.id
+	        (src.state_name <> 'Zhytomyr Oblast' AND src.state_name <> 'Vinnytsia Oblast' AND src.state_name <> 'Rivne Oblast' AND src.state_name <> 'Ternopil Oblast')
 	        AND (dst.state_name <> 'Zhytomyr Oblast' AND dst.state_name <> 'Vinnytsia Oblast' AND dst.state_name <> 'Rivne Oblast' AND dst.state_name <> 'Ternopil Oblast')
 
         -- SRC matters
