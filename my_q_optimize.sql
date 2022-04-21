@@ -21,15 +21,15 @@ SELECT
     -- get info about drivers. fileds as a proof.
     mu.id
     ,mu.name
-    ,mu.contact_number
-    ,ca.make
-    ,mp.is_pet
+    -- ,mu.contact_number
+    -- ,ca.make
+    -- ,mp.is_pet
     
     -- earnings for every driver
     ,avg(ri.price_per_head) AS salary
 
     -- easier to group by. SRC matters, not DST
-    ,src.state_name
+    -- ,src.state_name
 
     -- how many people they helped
     ,sum(ri.seats_available) AS pplcount
@@ -88,9 +88,9 @@ GROUP BY
     mu.id
 
     -- this should not affect the result because driver is unique
-    ,ca.make
-    ,mp.is_pet
-    ,src.state_name
+    -- ,ca.make
+    -- ,mp.is_pet
+    -- ,src.state_name
     
     -- compare selected avg driver's salary with avg salary by states
 -- HAVING avg(ri.price_per_head) > ALL
@@ -124,5 +124,6 @@ HAVING avg(ri.price_per_head) > (SELECT MAX(avg_per_head) FROM
 	    GROUP BY src.state_name 
 	) avg_state
 )
-ORDER BY salary DESC, pplcount DESC, days ASC
+-- ORDER BY salary DESC, pplcount DESC, days ASC
+ORDER BY salary DESC
 ;
